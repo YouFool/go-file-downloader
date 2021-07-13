@@ -22,7 +22,7 @@ func main() {
 	var wg sync.WaitGroup
 	// limit to 50 concurrent downloads
 	limiter := make(chan struct{}, 50)
-	for index, url := range urls {
+	for _, url := range urls {
 		wg.Add(1)
 		go downloader(&wg, limiter, url)
 	}
