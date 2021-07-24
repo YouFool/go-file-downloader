@@ -20,21 +20,23 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error while reading URLs from input file: %v", err)
 	}
+
 	downloadedURLs, err = util.ReadURLsFromFile("./output/_downloadedCache")
+	var URLsToDownload []string
 	if err != nil {
 		log.Printf("Could not read URLs from cache file: %v", err)
 	} else {
-		// TODO: Create slice with remaining images
+		URLsToDownload = util.FindDifference(URLs, downloadedURLs)
 	}
 
-	numFiles = len(URLs)
+	numFiles = len(URLsToDownload)
 
 	log.Printf("We have %d files to download!", numFiles)
 
 	var wg sync.WaitGroup
 	// limit to 50 concurrent downloads
 	limiter := make(chan struct{}, 50)
-	for _, URL := range URLs {
+	for _, URL := range URLsToDownload {
 		wg.Add(1)
 		go downloader(&wg, limiter, URL)
 	}
@@ -54,12 +56,12 @@ func downloader(wg *sync.WaitGroup, semaphore chan struct{}, URL string) {
 	client := &http.Client{Timeout: 900 * time.Second}
 	result, err := client.Get(URL)
 	if err != nil {
-		log.Fatalf("Error from server while executing request: %v", err)
+		log.Printf("Error from server while executing request: %v", err)
 	}
 
 	defer func() {
 		if err := result.Body.Close(); err != nil {
-			log.Fatalf("Erroe while reading response body: %v", err)
+			log.Printf("Error while reading response body: %v", err)
 		}
 	}()
 

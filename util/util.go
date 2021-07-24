@@ -55,3 +55,18 @@ func WriteDownloadedURLsToFile(downloadedURLs []string) {
 		}
 	}
 }
+
+// Returns the difference from the elements in `a` that aren't in `b`.
+func FindDifference(elements, original []string) []string {
+	source := make(map[string]struct{}, len(original))
+	for _, item := range original {
+		source[item] = struct{}{}
+	}
+	var diff []string
+	for _, elem := range elements {
+		if _, found := source[elem]; !found {
+			diff = append(diff, elem)
+		}
+	}
+	return diff
+}
