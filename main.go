@@ -11,24 +11,27 @@ import (
 	"time"
 )
 
-var numberOfFiles int
-var numberOfFilesDownloaded int
+var numFiles int
+var numFilesDownloaded int
+var downloadedURLs []string
 
 func main() {
-	urls := ReadUrlsFromInputFile("./input.txt")
-	numberOfFiles = len(urls)
+	URLs := util.ReadUrlsFromFile("./input.txt")
+	downloadedURLs := util.ReadUrlsFromFile("./output/downloaded")
+	numFiles = len(URLs)
 
-	log.Printf("We have %d files to download!", numberOfFiles)
+	log.Printf("We have %d files to download!", numFiles)
 
 	var wg sync.WaitGroup
 	// limit to 50 concurrent downloads
 	limiter := make(chan struct{}, 50)
-	for _, url := range urls {
+	for _, URL := range URLs {
 		wg.Add(1)
-		go downloader(&wg, limiter, url)
+		go downloader(&wg, limiter, URL)
 	}
 	wg.Wait()
 
+	util.WriteDownloadedURLsToFile(downloadedURLs)
 }
 
 // Downloads a file using a semaphore to block further requests
@@ -42,9 +45,15 @@ func downloader(wg *sync.WaitGroup, semaphore chan struct{}, URL string) {
 	client := &http.Client{Timeout: 900 * time.Second}
 	result, err := client.Get(URL)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error from server while executing request: %v", err)
 	}
-	defer result.Body.Close()
+
+	defer func() {
+		if err := result.Body.Close(); err != nil {
+			log.Fatalf("Erroe while reading response body: %v", err)
+		}
+	}()
+
 	var buf bytes.Buffer
 	// I'm copying to a buffer before writing it to file
 	// I could also just use IO copy to write it to the file
@@ -53,7 +62,8 @@ func downloader(wg *sync.WaitGroup, semaphore chan struct{}, URL string) {
 	// write the bytes to file
 	fileName := util.GetFileNameFromUrl(URL)
 	_ = ioutil.WriteFile("./output/"+fileName, buf.Bytes(), 0644)
-	numberOfFilesDownloaded++
-	log.Printf("Downloaded file with name %s ! (%d/%d)", fileName, numberOfFilesDownloaded, numberOfFiles)
+	numFilesDownloaded++
+	log.Printf("Downloaded file with name %s ! (%d/%d)", fileName, numFilesDownloaded, numFiles)
+	downloadedURLs = append(downloadedURLs, URL)
 	return
 }
