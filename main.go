@@ -40,7 +40,7 @@ func main() {
 	}
 	wg.Wait()
 
-	util.WriteDownloadedURLsToFile(URLsToDownload)
+	util.WriteDownloadedURLsToCacheFile(URLsToDownload)
 }
 
 // Downloads a file using a semaphore to block further requests

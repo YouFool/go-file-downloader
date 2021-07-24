@@ -42,7 +42,7 @@ func GetFileNameFromUrl(url string) string {
 }
 
 // Creates a new cache file or opens an already existing one and dumps the downloaded URLs into it
-func WriteDownloadedURLsToFile(downloadedURLs []string) {
+func WriteDownloadedURLsToCacheFile(downloadedURLs []string) {
 	cacheFile, err := os.OpenFile(CacheFilePath, os.O_CREATE, 0644)
 
 	// close file on exit and check for its returned error
