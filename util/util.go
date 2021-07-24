@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-// Reads all URL's from a input file
-func ReadUrlsFromFile(filePath string) []string {
+// Reads all URLs from a input file into a slice, returns error if could not read file
+func ReadURLsFromFile(filePath string) ([]string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 	defer func() {
 		if err := file.Close(); err != nil {
@@ -19,13 +19,12 @@ func ReadUrlsFromFile(filePath string) []string {
 		}
 	}()
 
-	var urls []string
+	var URLs []string
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
-		//log.Println(scanner.Text())
-		urls = append(urls, scanner.Text())
+		URLs = append(URLs, scanner.Text())
 	}
-	return urls
+	return URLs, nil
 }
 
 // Gets the file name from a given URL
@@ -36,7 +35,7 @@ func GetFileNameFromUrl(url string) string {
 
 // Creates an output file and dumps the original URLs
 func WriteDownloadedURLsToFile(downloadedURLs []string) {
-	file, err := os.Create("./output/downloaded")
+	file, err := os.Create("./output/_downloadedCache")
 	if err != nil {
 		log.Fatalf("Error while creating output file: %v", err)
 	}

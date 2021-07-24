@@ -16,8 +16,17 @@ var numFilesDownloaded int
 var downloadedURLs []string
 
 func main() {
-	URLs := util.ReadUrlsFromFile("./input.txt")
-	downloadedURLs := util.ReadUrlsFromFile("./output/downloaded")
+	URLs, err := util.ReadURLsFromFile("./input.txt")
+	if err != nil {
+		log.Fatalf("Error while reading URLs from input file: %v", err)
+	}
+	downloadedURLs, err = util.ReadURLsFromFile("./output/_downloadedCache")
+	if err != nil {
+		log.Printf("Could not read URLs from cache file: %v", err)
+	} else {
+		// TODO: Create slice with remaining images
+	}
+
 	numFiles = len(URLs)
 
 	log.Printf("We have %d files to download!", numFiles)
@@ -63,7 +72,7 @@ func downloader(wg *sync.WaitGroup, semaphore chan struct{}, URL string) {
 	fileName := util.GetFileNameFromUrl(URL)
 	_ = ioutil.WriteFile("./output/"+fileName, buf.Bytes(), 0644)
 	numFilesDownloaded++
-	log.Printf("Downloaded file with name %s ! (%d/%d)", fileName, numFilesDownloaded, numFiles)
+	log.Printf("Downloaded file with name: %s -> (%d/%d)", fileName, numFilesDownloaded, numFiles)
 	downloadedURLs = append(downloadedURLs, URL)
 	return
 }
