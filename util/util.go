@@ -41,8 +41,7 @@ func GetFileNameFromUrl(url string) string {
 	return tokens[len(tokens)-1]
 }
 
-// Creates an output file and dumps the original URLs
-// TODO: Update doc
+// Creates a new cache file or opens an already existing one and dumps the downloaded URLs into it
 func WriteDownloadedURLsToFile(downloadedURLs []string) {
 	cacheFile, err := os.OpenFile(CacheFilePath, os.O_CREATE, 0644)
 
@@ -55,24 +54,17 @@ func WriteDownloadedURLsToFile(downloadedURLs []string) {
 	}()
 
 	if errors.Is(err, os.ErrNotExist) {
-		// handle the case where the file doesn't exist
-		//newCacheFile, err := os.Create(CacheFilePath)
-		//if err != nil {
-		//	log.Fatalf("Error while creating output cache file: %v", err)
-		//}
-
+		// File doesn't exist, adds URLs to the cache file
 		updateCacheFileURLs(cacheFile, downloadedURLs)
 	} else {
-		// Cache already exits, need to append URLs to new cache
-		// Saves the newly appended URLs to the cache file
+		// Cache already exits, appends URLs to the cache file
 		cachedURLs := readURLsFromFile(cacheFile)
 		difference := FindDifference(downloadedURLs, cachedURLs)
 		updateCacheFileURLs(cacheFile, difference)
 	}
-
 }
 
-// TODO: Doc
+// Updates the cache file with the new-downloaded URLs
 func updateCacheFileURLs(cacheFile *os.File, downloadedURLs []string) {
 	for _, u := range downloadedURLs {
 		_, err := cacheFile.WriteString(u + "\n")
