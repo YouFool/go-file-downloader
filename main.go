@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"file-downloader/util"
 	"io"
 	"io/ioutil"
 	"log"
@@ -50,7 +51,7 @@ func downloader(wg *sync.WaitGroup, semaphore chan struct{}, URL string) {
 	// directly and save memory by dumping to the disk directly.
 	_, _ = io.Copy(&buf, result.Body)
 	// write the bytes to file
-	fileName := GetFileNameFromUrl(URL)
+	fileName := util.GetFileNameFromUrl(URL)
 	_ = ioutil.WriteFile("./output/"+fileName, buf.Bytes(), 0644)
 	numberOfFilesDownloaded++
 	log.Printf("Downloaded file with name %s ! (%d/%d)", fileName, numberOfFilesDownloaded, numberOfFiles)

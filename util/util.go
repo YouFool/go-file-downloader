@@ -1,4 +1,4 @@
-package main
+package util
 
 import (
 	"bufio"
@@ -13,7 +13,11 @@ func ReadUrlsFromInputFile(filePath string) []string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Fatalf("Error while closing input file: %v", err)
+		}
+	}()
 
 	var urls []string
 	scanner := bufio.NewScanner(file)
