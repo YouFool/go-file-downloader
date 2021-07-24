@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-const CacheFilePath = "./output/_downloadedCache"
+const CacheFilePath = "./_downloadedCache"
 
 // Reads all URLs from a input file into a slice, returns error if could not read file
 func ReadURLsFromFilePath(filePath string) ([]string, error) {
