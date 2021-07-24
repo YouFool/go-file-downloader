@@ -15,12 +15,12 @@ var numFiles int
 var numFilesDownloaded int
 
 func main() {
-	URLs, err := util.ReadURLsFromFile("./input.txt")
+	URLs, err := util.ReadURLsFromFilePath("./input.txt")
 	if err != nil {
 		log.Fatalf("Error while reading URLs from input file: %v", err)
 	}
 
-	downloadedCache, cacheErr := util.ReadURLsFromFile("./output/_downloadedCache")
+	downloadedCache, cacheErr := util.ReadURLsFromFilePath(util.CacheFilePath)
 	var URLsToDownload []string
 	if cacheErr != nil {
 		log.Printf("Could not read URLs from cache file: %v", cacheErr)
