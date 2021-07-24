@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("Error while reading URLs from input file: %v", err)
 	}
 
-	downloadedCache, cacheErr := util.ReadURLsFromFilePath(util.CacheFilePath)
+	downloadedCache, cacheErr := util.ReadURLsFromFilePath(util.DownloadedCacheFilePath)
 	var URLsToDownload []string
 	if cacheErr != nil {
 		log.Printf("Could not read URLs from cache file: %v", cacheErr)

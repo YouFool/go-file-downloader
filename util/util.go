@@ -8,7 +8,13 @@ import (
 	"strings"
 )
 
-const CacheFilePath = "./_downloadedCache"
+const DownloadedCacheFilePath = "./_downloadedCache"
+
+// Gets the file name from a given URL
+func GetFileNameFromUrl(url string) string {
+	tokens := strings.Split(url, "/")
+	return tokens[len(tokens)-1]
+}
 
 // Reads all URLs from a input file into a slice, returns error if could not read file
 func ReadURLsFromFilePath(filePath string) ([]string, error) {
@@ -35,15 +41,9 @@ func readURLsFromFile(file *os.File) []string {
 	return URLs
 }
 
-// Gets the file name from a given URL
-func GetFileNameFromUrl(url string) string {
-	tokens := strings.Split(url, "/")
-	return tokens[len(tokens)-1]
-}
-
 // Creates a new cache file or opens an already existing one and dumps the downloaded URLs into it
 func WriteDownloadedURLsToCacheFile(downloadedURLs []string) {
-	cacheFile, err := os.OpenFile(CacheFilePath, os.O_CREATE, 0644)
+	cacheFile, err := os.OpenFile(DownloadedCacheFilePath, os.O_CREATE, 0644)
 
 	// close file on exit and check for its returned error
 	defer func() {
