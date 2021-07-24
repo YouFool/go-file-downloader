@@ -11,7 +11,7 @@ import (
 func ReadURLsFromFile(filePath string) ([]string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
-		return nil, err
+		return []string{}, err
 	}
 	defer func() {
 		if err := file.Close(); err != nil {
@@ -35,6 +35,7 @@ func GetFileNameFromUrl(url string) string {
 
 // Creates an output file and dumps the original URLs
 func WriteDownloadedURLsToFile(downloadedURLs []string) {
+	// TODO: Check if cache file already exists and diff it with the new downloaded URLs
 	file, err := os.Create("./output/_downloadedCache")
 	if err != nil {
 		log.Fatalf("Error while creating output file: %v", err)
@@ -45,6 +46,7 @@ func WriteDownloadedURLsToFile(downloadedURLs []string) {
 		if err := file.Close(); err != nil {
 			log.Fatalf("Error while closing output file: %v", err)
 		}
+		log.Println("Done writing cache file!")
 	}()
 
 	for _, u := range downloadedURLs {

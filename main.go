@@ -13,7 +13,6 @@ import (
 
 var numFiles int
 var numFilesDownloaded int
-var downloadedURLs []string
 
 func main() {
 	URLs, err := util.ReadURLsFromFile("./input.txt")
@@ -21,14 +20,13 @@ func main() {
 		log.Fatalf("Error while reading URLs from input file: %v", err)
 	}
 
-	downloadedURLs, err = util.ReadURLsFromFile("./output/_downloadedCache")
+	downloadedCache, cacheErr := util.ReadURLsFromFile("./output/_downloadedCache")
 	var URLsToDownload []string
-	if err != nil {
-		log.Printf("Could not read URLs from cache file: %v", err)
-	} else {
-		URLsToDownload = util.FindDifference(URLs, downloadedURLs)
+	if cacheErr != nil {
+		log.Printf("Could not read URLs from cache file: %v", cacheErr)
 	}
 
+	URLsToDownload = util.FindDifference(URLs, downloadedCache)
 	numFiles = len(URLsToDownload)
 
 	log.Printf("We have %d files to download!", numFiles)
@@ -42,7 +40,7 @@ func main() {
 	}
 	wg.Wait()
 
-	util.WriteDownloadedURLsToFile(downloadedURLs)
+	util.WriteDownloadedURLsToFile(URLsToDownload)
 }
 
 // Downloads a file using a semaphore to block further requests
@@ -75,6 +73,5 @@ func downloader(wg *sync.WaitGroup, semaphore chan struct{}, URL string) {
 	_ = ioutil.WriteFile("./output/"+fileName, buf.Bytes(), 0644)
 	numFilesDownloaded++
 	log.Printf("Downloaded file with name: %s -> (%d/%d)", fileName, numFilesDownloaded, numFiles)
-	downloadedURLs = append(downloadedURLs, URL)
 	return
 }
