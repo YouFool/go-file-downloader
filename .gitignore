@@ -1,4 +1,4 @@
 /input*.txt
 /.idea/
 /output*/
-_downloadedCache
+_downloadedCache*
