@@ -12,12 +12,12 @@ Since Go has a superb support to [concurrency and parallelism](https://www.youtu
 ## 💪 How to I get started?
 1. You will need [Go 1.14 or higher](https://golang.org/dl/) installed to compile the source code
 2. With Go installed, let's compile the source code
-    2. Open the terminal and execute `cd path/to/file-downloader && go build`. In example: `cd C:\Users\myUser\Downloads\go-file-downloader && go build` This command will generate an executable file _(.exe)_ inside the folder.
+    * Open the terminal and execute `cd path/to/file-downloader && go build`. In example: `cd C:\Users\myUser\Downloads\go-file-downloader && go build` This command will generate an executable file _(.exe)_ inside the folder.
 3. With executable generated, create a folder called `output` relative to it
 4. Once the program compiles successfully, you just need to provide a file called `input.txt` with the URLs to download, where each link must be separated from the other by a line feed
 5. **That's it! You're ready to go!** Run the _.exe_ file and check the downloaded files inside the `output` folder. Just note that:
-    5. At the end of execution, the downloader will create a cache file called `_downloadedCache` with all downloaded URLs. If some error occurred while downloading file(s) you can just run it again and download the failed ones.
-    5. You can also delete/rename this cache file to download everything again  
+    * At the end of execution, the downloader will create a cache file called `_downloadedCache` with all downloaded URLs. If some error occurred while downloading file(s) you can just run it again and download the failed ones.
+    * You can also delete/rename this cache file to download everything again  
 
 Example program output:
 ![image](https://user-images.githubusercontent.com/37518972/126886083-709f4488-abdc-411a-bb3e-260158db321b.png)
